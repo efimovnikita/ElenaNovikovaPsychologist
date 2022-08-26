@@ -1,4 +1,8 @@
 ﻿@page "/"
+@using Telegram.Bot
+@using Telegram.Bot.Types.Enums
+@using System.Text
+@inject NavigationManager NavigationManager
 
 <PageTitle>Психолог Елена Новикова</PageTitle>
 
@@ -155,21 +159,27 @@
     <p class="text-center text-slate-600 font-light px-14">Пожалуйста, представьтесь, опишите кратко Вашу проблему и оставьте свои контактные данные, чтобы я могла с Вами связаться. И давайте вместе проработаем проблемы, которые Вас беспокоят.</p>
   </div>
   <form class="flex flex-col items-stretch gap-4 w-5/6 xl:w-1/3">
-    <input class="py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" type="text" name="" id="" placeholder="Имя">
-    <input class="py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" type="text" name="" id="" placeholder="Email">
-    <input class="py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" type="text" name="" id="" placeholder="Тема обращения">
-    <input class="py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" type="text" name="" id="" placeholder="Телефон">
+    <input @bind="_name" class="py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" type="text" name="" id="" placeholder="Имя">
+    <input @bind="_email" class="py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" type="text" name="" id="" placeholder="Email">
+    <input @bind="_subject" class="py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" type="text" name="" id="" placeholder="Тема обращения">
+    <input @bind="_phone" class="py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" type="text" name="" id="" placeholder="Телефон">
     @*
     <input class="py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" type="date" name="" id="" placeholder="Дата">
     *@
-    <textarea class="resize-y py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" placeholder="Сообщение" name="" id="" cols="30" rows="5"></textarea>
-    <button class="bg-[#8fd0cc] w-[200px] py-3 tracking-wider text-lg shadow-xl shadow-[#8fd0cc]/40 hover:bg-[#dabd96] hover:shadow-[#dabd96]/40 self-center mt-5 text-white">Записаться</button>
+    <textarea @bind="_msg" class="resize-y py-3 text-lg font-light text-slate-800 border-b-[1px] border-slate-300 hover:border-[#8dd0cc] focus:outline-none" placeholder="Сообщение" name="" id="" cols="30" rows="5"></textarea>
+    <button @onclick="Submit" class="bg-[#8fd0cc] w-[200px] py-3 tracking-wider text-lg shadow-xl shadow-[#8fd0cc]/40 hover:bg-[#dabd96] hover:shadow-[#dabd96]/40 self-center mt-5 text-white">Записаться</button>
   </form>
 </div>
 
 <AnchorNavigation />
 
 @code{
+  private string _name = "";
+  private string _email = "";
+  private string _subject = "";
+  private string _phone = "";
+  private string _msg = "";
+
   static string GetId(string link) => link;
   static string GetHref(string link) => "#" + GetId(link);
 
@@ -183,4 +193,42 @@
     _showMenu = !_showMenu;
   }
 
+  private async Task Submit()
+  {
+    if (new [] {_name,_email,_subject,_phone,_msg}.All(s => String.IsNullOrWhiteSpace(s) == false))
+    {
+      await SendMessageToTelegram();
+    }
+  }
+  private async Task SendMessageToTelegram()
+  {
+    try
+    {
+      TelegramBotClient bot = new("5786188707:AAGn54QcKOUFWJX7rzUYB0RS_qlks7Dkbvo");
+      
+      StringBuilder sb = new();
+      sb.AppendLine($"<b>Новое обращение</b>");
+      sb.AppendLine();
+      sb.AppendLine($"<i>Имя:</i> {_name}");
+      sb.AppendLine($"<i>Email:</i> {_email}");
+      sb.AppendLine($"<i>Тема:</i> {_subject}");
+      sb.AppendLine($"<i>Телефон:</i> {_phone}");
+      sb.AppendLine($"<i>Сообщение:</i> {_msg}");
+      
+      await bot.SendTextMessageAsync("@enpsychologist", sb.ToString(),
+        ParseMode.Html);
+
+      _name = "";
+      _email = "";
+      _subject = "";
+      _phone = "";
+      _msg = "";
+
+      NavigationManager.NavigateTo("/");
+    }
+    catch (Exception exception)
+    {
+      Console.WriteLine(exception);
+    }
+  }
 }
