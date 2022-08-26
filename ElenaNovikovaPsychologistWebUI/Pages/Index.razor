@@ -198,6 +198,14 @@
     if (new [] {_name,_email,_subject,_phone,_msg}.All(s => String.IsNullOrWhiteSpace(s) == false))
     {
       await SendMessageToTelegram();
+      
+      _name = "";
+      _email = "";
+      _subject = "";
+      _phone = "";
+      _msg = "";
+      
+      //NavigationManager.NavigateTo("/#header");
     }
   }
   private async Task SendMessageToTelegram()
@@ -215,16 +223,8 @@
       sb.AppendLine($"<i>Телефон:</i> {_phone}");
       sb.AppendLine($"<i>Сообщение:</i> {_msg}");
       
-      await bot.SendTextMessageAsync("@enpsychologist", sb.ToString(),
+      await bot.SendTextMessageAsync("-1001762041566", sb.ToString(),
         ParseMode.Html);
-
-      _name = "";
-      _email = "";
-      _subject = "";
-      _phone = "";
-      _msg = "";
-
-      NavigationManager.NavigateTo("/");
     }
     catch (Exception exception)
     {
