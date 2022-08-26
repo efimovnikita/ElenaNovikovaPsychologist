@@ -577,6 +577,14 @@ video {
   margin-top: 1rem;
 }
 
+.block {
+  display: block;
+}
+
+.inline {
+  display: inline;
+}
+
 .flex {
   display: flex;
 }
@@ -639,6 +647,10 @@ video {
 
 .resize-y {
   resize: vertical;
+}
+
+.scroll-mt-10 {
+  scroll-margin-top: 2.5rem;
 }
 
 .grid-cols-1 {
@@ -750,11 +762,6 @@ video {
 
 .bg-\[\#8fd0cc\]\/80 {
   background-color: rgb(143 208 204 / 0.8);
-}
-
-.bg-slate-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(226 232 240 / var(--tw-bg-opacity));
 }
 
 .bg-slate-400 {
