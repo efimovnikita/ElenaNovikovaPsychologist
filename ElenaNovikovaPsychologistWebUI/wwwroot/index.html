@@ -11,6 +11,18 @@
 
 <body>
     <div id="app">Loading...</div>
+    <script>
+        function BlazorScrollToId(id) {
+            const element = document.getElementById(id);
+            if (element instanceof HTMLElement) {
+                element.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                    inline: "nearest"
+                });
+            }
+        }
+    </script>
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
 
