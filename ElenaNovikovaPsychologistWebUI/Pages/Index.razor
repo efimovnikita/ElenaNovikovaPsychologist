@@ -28,15 +28,22 @@
 <div class="sticky top-0 flex flex-col bg-white shadow-sm">
   <div class="flex flex-row justify-between items-center px-4 py-3">
     <a href="@GetHref("header")" class="text-4xl text-[#8fd0cc] font-semibold">Psychologist</a>
-    <div class="hidden">
+    <div @onclick="ToggleShowMenu">
       <svg class="w-10 fill-slate-800 cursor-pointer" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><path d="M4 7C4 6.44771 4.44772 6 5 6H24C24.5523 6 25 6.44771 25 7C25 7.55229 24.5523 8 24 8H5C4.44772 8 4 7.55229 4 7Z"/><path d="M4 13.9998C4 13.4475 4.44772 12.9997 5 12.9997L16 13C16.5523 13 17 13.4477 17 14C17 14.5523 16.5523 15 16 15L5 14.9998C4.44772 14.9998 4 14.552 4 13.9998Z"/><path d="M5 19.9998C4.44772 19.9998 4 20.4475 4 20.9998C4 21.552 4.44772 21.9997 5 21.9997H22C22.5523 21.9997 23 21.552 23 20.9998C23 20.4475 22.5523 19.9998 22 19.9998H5Z"/></svg>
     </div>
   </div>
-  <div class="h-[500px] md:h-24 bg-slate-50 hidden"></div>
+  <nav class="@MenuStyle">
+    <ul class="flex flex-col items-center justify-center py-10 text-3xl text-gray-700 gap-5 uppercase">
+      <li><a href="@GetHref("header")" @onclick="ToggleShowMenu">Услуги</a></li>
+      <li><a href="@GetHref("articles")" @onclick="ToggleShowMenu">Статьи</a></li>
+      <li><a href="@GetHref("testimonials")" @onclick="ToggleShowMenu">Отзывы</a></li>
+      <li><a href="@GetHref("form")" @onclick="ToggleShowMenu">Запись</a></li>
+    </ul>
+  </nav>
 </div>
 <div>
   <img class="w-full" src="https://html.modernwebtemplates.com/psychologist/images/slide01.jpg" alt="" srcset="">
-  <div class="text-white bg-[#444444] flex justify-center text-5xl py-7 shadow-inner">Елена Новикова</div>
+  <div class="text-white bg-[#444444] flex justify-center text-4xl md:text-5xl py-7 shadow-inner">Елена Новикова</div>
 </div>
 <div class="flex flex-col items-center py-7 text-gray-700">
   <div class="flex flex-col gap-5 items-center w-5/6 lg:w-2/3">
@@ -98,7 +105,7 @@
 </div>
 <div class="flex flex-col items-center py-7 text-gray-700">
   <div class="flex w-5/6 flex-col items-center gap-5 lg:w-2/3">
-    <h2 class="text-4xl font-bold">Последние статьи</h2>
+    <h2 id="@GetId("articles")" class="text-4xl font-bold scroll-mt-16">Последние статьи</h2>
     <span class="text-center text-gray-500">Статьи по психологии, научные исследования, а так же мой взгляд на психологические проблемы с которыми сталкиваются многие люди.</span>
   </div>
   <div class="flex flex-col items-stretch gap-7 py-10 px-6 lg:flex-row">
@@ -134,7 +141,7 @@
     </div>
   </div>
 </div>
-<div class="bg-thought-texture">
+<div id="@GetId("testimonials")" class="bg-thought-texture scroll-mt-16">
   <div class="bg-[#dabd96]/95 flex flex-col items-center gap-9">
     <div class="flex flex-col items-center p-12 text-white gap-7 text-center text-lg">
       <blockquote class="uppercase text-2xl font-semibold">“для меня это был замечательный и очень своевременный опыт, могу сказать что я действительно впечатлен...”</blockquote>
@@ -163,6 +170,17 @@
 <AnchorNavigation />
 
 @code{
-  string GetId(string link) => link;
-  string GetHref(string link) => "#" + GetId(link);
+  static string GetId(string link) => link;
+  static string GetHref(string link) => "#" + GetId(link);
+
+  private static bool _showMenu;
+  private static string MenuStyle => _showMenu ? 
+    "transition-all opacity-100 bg-white border-b-[1px] border-slate-100" : 
+    "transition-all h-0 opacity-0 bg-white";
+
+  private static void ToggleShowMenu()
+  {
+    _showMenu = !_showMenu;
+  }
+
 }
